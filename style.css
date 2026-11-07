@@ -1964,3 +1964,121 @@ footer {
 .hero-title h1 span {
   display: inline;
 }
+
+@media (max-width: 600px) {
+  /* Layout About */
+  #about .ab {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    align-items: start;
+  }
+
+  /* Quote / papan catur */
+  #about .qt {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    margin-bottom: 22px;
+    line-height: 1.5;
+  }
+
+  #about .qt-a {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+
+  #about .qt-b {
+    display: block;
+    font-size: clamp(1rem, 4.5vw, 1.3rem);
+    line-height: 1.35;
+  }
+
+  /* Tombol */
+  #about .bt {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 0;
+  }
+
+  #about .bt .b {
+    min-height: 48px;
+    padding: 11px 18px;
+    font-size: 0.88rem;
+  }
+
+  /* Area foto dan orbit */
+  #about .ab > div:last-child {
+    width: 100%;
+    margin-top: 65px;
+    padding-bottom: 10px;
+  }
+
+  #about .orb2 {
+    width: min(230px, 64vw);
+    margin: 0 auto;
+  }
+
+  /* Ukuran orbit */
+  #about .r1 {
+    inset: -26px;
+  }
+
+  #about .r2 {
+    inset: -42px;
+  }
+
+  /* Ikon teknologi */
+  #about .rg i {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+  }
+
+  #about .rg i svg {
+    width: 21px;
+    height: 21px;
+  }
+
+  /* Foto profil */
+  #about .circ {
+    width: 100%;
+    aspect-ratio: 1;
+    box-shadow: 0 0 0 8px var(--sf);
+  }
+
+  /* Statistik */
+  #about .stt {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 35px;
+  }
+
+  #about .sc {
+    min-height: 76px;
+    padding: 16px 18px;
+    border-radius: 17px;
+  }
+
+  #about .sc b {
+    font-size: 1.5rem;
+  }
+}
+
+/* HP layar kecil */
+@media (max-width: 380px) {
+  #about .orb2 {
+    width: 205px;
+  }
+
+  #about .ab > div:last-child {
+    margin-top: 55px;
+  }
+
+  #about .bt .b {
+    padding: 10px 13px;
+    font-size: 0.82rem;
+  }
+}
