@@ -1,8 +1,3 @@
-/* ============================================================
-   Portofolio Yahya Ismail Sinaga - gaya (CSS)
-   Warna & ukuran utama ada di :root (bagian paling atas).
-   ============================================================ */
-
 :root {
   --bg: #000000;
   --fg: #f3f3f3;
@@ -1001,6 +996,9 @@ textarea.f {
   position: fixed;
   left: 50%;
   bottom: 90px;
+  width: max-content;
+  max-width: min(420px, calc(100vw - 32px));
+  text-align: center;
   translate: -50% 20px;
   opacity: 0;
   padding: 11px 18px;
@@ -1471,9 +1469,6 @@ footer {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rw ul {
-    animation: none !important;
-  }
   html {
     scroll-behavior: auto;
   }
@@ -1481,6 +1476,8 @@ footer {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    /* tanpa baris ini, animasi infinite (orbit, pita, ikon melayang) berkedip acak */
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
   .rise,
@@ -2080,5 +2077,105 @@ footer {
   #about .bt .b {
     padding: 10px 13px;
     font-size: 0.82rem;
+  }
+}
+
+/* ======================================
+   YAHYA PORTFOLIO - MOBILE ABOUT FIX
+====================================== */
+
+@media screen and (max-width: 600px) {
+  /* Layout utama */
+  .ab {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 65px;
+    align-items: start;
+  }
+
+  /* Quote */
+  .qt {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 18px 18px 18px 22px;
+    margin-bottom: 22px;
+    font-size: clamp(1rem, 4vw, 1.2rem);
+  }
+
+  /* Tombol */
+  .bt {
+    gap: 10px;
+  }
+
+  .b {
+    min-height: 48px;
+    padding: 12px 17px;
+  }
+
+  /* Foto profil */
+  .orb2 {
+    width: min(240px, 62vw);
+    margin: 0 auto;
+  }
+
+  /* Lingkaran orbit */
+  .r1 {
+    inset: -30px;
+  }
+
+  .r2 {
+    inset: -50px;
+  }
+
+  /* Ikon teknologi */
+  .rg i {
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    box-shadow: 0 4px 10px -5px #000;
+  }
+
+  /* Kartu statistik */
+  .stt {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin-top: 42px;
+  }
+
+  .sc {
+    min-height: 72px;
+    padding: 16px 18px;
+    box-sizing: border-box;
+  }
+
+  .sc b {
+    font-size: 1.4rem;
+  }
+}
+
+/* HP kecil */
+@media screen and (max-width: 380px) {
+  .orb2 {
+    width: 210px;
+  }
+
+  .ab {
+    gap: 58px;
+  }
+
+  .qt {
+    padding: 15px;
+  }
+}
+
+/* HP: blur di puluhan kartu kecil di atas kanvas bintang yang terus bergerak bikin scroll berat.
+   Di layar kecil cukup pakai warna kacanya saja (tanpa blur). Hapus blok ini kalau mau blur tetap ada. */
+@media (max-width: 860px) {
+  .chips span,
+  .tl,
+  .sc,
+  .ec {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 }

@@ -44,15 +44,17 @@
   sty.textContent = ".ph.has::before,.ph.has::after{display:none}";
   document.head.appendChild(sty);
   $$(".ph").forEach(function (p) {
-    var src = p.closest("#pc") ? PHOTO_PROFIL || PHOTO : PHOTO;
+    var prof = !!p.closest("#pc"),
+      src = prof ? PHOTO_PROFIL || PHOTO : PHOTO;
     if (!src) return;
     var i = new Image();
+    i.alt = prof ? "Foto Yahya Ismail Sinaga" : "";
+    /* foto dipasang hanya kalau file-nya ada; kalau tidak, siluet bawaan tetap tampil */
     i.onload = function () {
+      p.insertBefore(i, p.firstChild);
       p.classList.add("has");
     };
     i.src = src;
-    i.alt = "";
-    p.insertBefore(i, p.firstChild);
   });
 
   var rls = [
@@ -122,14 +124,14 @@
 
   /* toast */
   var tt;
-  function toast(m) {
+  function toast(m, ms) {
     var t = $("#ts");
     t.textContent = m;
     t.classList.add("on");
     clearTimeout(tt);
     tt = setTimeout(function () {
       t.classList.remove("on");
-    }, 2600);
+    }, ms || 2600);
   }
 
   /* lanyard: tali elastis, bisa ditarik melar ke kiri dan kanan */
@@ -242,6 +244,8 @@
     fc = "#f3f3f3",
     fr = 0,
     TINT = ["#ffffff", "#ffffff", "#cfe2ff", "#ffe9d0", "#d9d4ff"];
+  var lw = 0,
+    lh = 0;
   function rs() {
     var d = Math.min(devicePixelRatio || 1, 2);
     W = innerWidth;
@@ -249,6 +253,14 @@
     cv.width = W * d;
     cv.height = H * d;
     cx.setTransform(d, 0, 0, d, 0, 0);
+    /* di HP, bar alamat browser yang naik-turun saat scroll ikut memicu "resize"
+       (tinggi berubah sedikit). Bintang jangan diacak ulang karena itu, biar tidak berkedip. */
+    if (S.length && W === lw && Math.abs(H - lh) < 150) {
+      if (red) draw(0);
+      return;
+    }
+    lw = W;
+    lh = H;
     var n = Math.min(380, Math.round((W * H) / 5200));
     S = [];
     for (var i = 0; i < n; i++) {
@@ -407,6 +419,12 @@
     });
     return list;
   }
+  /* angka statistik mengikuti jumlah elemen aslinya (atribut data-from) supaya tidak basi lagi */
+  $$("[data-from]").forEach(function (b) {
+    var n = $$(b.getAttribute("data-from")).length;
+    if (n) b.dataset.n = n;
+  });
+
   var io = new IntersectionObserver(
     function (es) {
       es.forEach(function (e) {
@@ -434,7 +452,6 @@
   });
 
   /* hero: animasi masuk diputar ulang saat kembali ke atas */
-  var hrs = $$(".rise");
   new IntersectionObserver(
     function (es) {
       es.forEach(function (e) {
@@ -458,6 +475,9 @@
   /* nav aktif + tombol turun */
   var ids = ["home", "about", "portfolio", "contact"],
     cur = 0;
+  var dn = $("#dn");
+  /* section "aktif" = yang melewati garis tengah layar. Dulu threshold 0.5 (50% section harus
+     kelihatan sekaligus), padahal di HP section bisa lebih dari 2x tinggi layar, jadi tidak pernah aktif. */
   var so = new IntersectionObserver(
     function (es) {
       es.forEach(function (e) {
@@ -469,11 +489,16 @@
               a.getAttribute("href") === "#" + e.target.id,
             );
           });
-          $("#dn").classList.toggle("up", cur === ids.length - 1);
+          var last = cur === ids.length - 1;
+          dn.classList.toggle("up", last);
+          dn.setAttribute(
+            "aria-label",
+            last ? "Kembali ke atas" : "Ke bagian berikutnya",
+          );
         }
       });
     },
-    { threshold: 0.5 },
+    { rootMargin: "-50% 0px -50% 0px", threshold: 0 },
   );
   ids.forEach(function (i) {
     so.observe($("#" + i));
@@ -535,7 +560,10 @@
     h += v
       ? '<a href="' +
         (k === "email" ? "mailto:" + v : v) +
-        '" target="_blank" rel="noopener">' +
+        '"' +
+        /* mailto jangan pakai target=_blank (bisa memunculkan tab kosong) */
+        (k === "email" ? "" : ' target="_blank" rel="noopener noreferrer"') +
+        ">" +
         lb +
         "<i>↗</i></a>"
       : "<span>" + lb + '<small class="mono">segera diisi</small></span>';
@@ -543,39 +571,56 @@
   $("#sn").innerHTML = h;
   $("#fm").addEventListener("submit", function (e) {
     e.preventDefault();
-    var f = e.target;
-    if (!f.m.value.trim()) {
+    var f = e.target,
+      nama = f.n.value.trim(),
+      mail = f.e.value.trim(),
+      pesan = f.m.value.trim();
+    if (!pesan) {
       toast("Tulis pesanmu dulu ya.");
+      f.m.focus();
+      return;
+    }
+    /* form pakai novalidate, jadi format email dicek manual (boleh dikosongkan) */
+    if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) {
+      toast("Format emailnya belum benar.");
+      f.e.focus();
       return;
     }
     if (!LINKS.email) {
       toast("Pengiriman pesan aktif setelah email dihubungkan.");
       return;
     }
+    var ttd = [nama, mail ? "(" + mail + ")" : ""].filter(Boolean).join(" ");
     location.href =
       "mailto:" +
       LINKS.email +
       "?subject=" +
-      encodeURIComponent("Pesan dari " + (f.n.value || "pengunjung")) +
+      encodeURIComponent("Pesan dari " + (nama || "pengunjung")) +
       "&body=" +
-      encodeURIComponent(
-        f.m.value + "\n\n" + f.n.value + " (" + f.e.value + ")",
-      );
+      encodeURIComponent(pesan + (ttd ? "\n\n" + ttd : ""));
+    toast(
+      "Membuka aplikasi email… kalau tidak terbuka, hubungi lewat WhatsApp ya.",
+      5200,
+    );
   });
 
-  /* ganti logo bila diisi di LOGOS */
+  /* ganti logo SVG dengan PNG dari LOGOS, tapi HANYA kalau file PNG-nya benar-benar ada.
+     Kalau nama file salah / belum diupload, logo SVG bawaan tetap tampil (bukan gambar rusak). */
   $$("svg use").forEach(function (u) {
+    if (u.closest("symbol")) return; /* lewati isi sprite di atas halaman */
     var sv = u.ownerSVGElement,
       id = (u.getAttribute("href") || "").slice(1),
       src = LOGOS[id] || LOGOS[sv.parentNode.textContent.trim()];
     if (!src) return;
     var im = new Image();
-    im.src = src;
     im.alt = "";
     im.className = "lgi";
     ["width", "height"].forEach(function (a) {
       if (sv.getAttribute(a)) im.setAttribute(a, sv.getAttribute(a));
     });
-    sv.replaceWith(im);
+    im.onload = function () {
+      if (sv.isConnected) sv.replaceWith(im);
+    };
+    im.src = src;
   });
 })();

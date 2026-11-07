@@ -8,12 +8,24 @@
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
     <title>Portofolio - Yahya</title>
+    <meta
+      name="description"
+      content="Portofolio Yahya Ismail Sinaga, siswa RPL SMK Multi Karya. Web &amp; App Developer: Python, PHP, Laravel, Flutter, Rust, C++, dan MySQL."
+    />
+    <meta name="theme-color" content="#000000" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Portofolio - Yahya Ismail Sinaga" />
+    <meta
+      property="og:description"
+      content="Web &amp; App Developer. Lihat tech stack, pendidikan, dan kontak."
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=Outfit:wght@300;400;500&family=Space+Mono&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=Outfit:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=2" />
     <link rel="icon" type="image/png" href="./img/kali.png" />
   </head>
   <body>
@@ -380,10 +392,9 @@
           >
         </div>
         <div class="wrap">
-          <
           <div class="cp">
             <div class="mono av rise" style="--d: 0.2s">
-              <i></i> Open to Learn, Build & Collaborate
+              <i></i> Open to Learn, Build &amp; Collaborate
             </div>
 
             <h1 class="rise" style="--d: 0.35s">
@@ -522,11 +533,12 @@
           </div>
           <div class="stt">
             <div class="sc rv">
-              <span class="mono">KEAHLIAN</span><b data-n="11">0</b><i></i>
+              <span class="mono">KEAHLIAN</span
+              ><b data-n="13" data-from="#tech .tl">0</b><i></i>
             </div>
             <div class="sc rv" style="--d: 0.1s">
-              <span class="mono">JENJANG SEKOLAH</span><b data-n="3">0</b
-              ><i></i>
+              <span class="mono">JENJANG SEKOLAH</span
+              ><b data-n="3" data-from="#edu .ec">0</b><i></i>
             </div>
             <div class="sc rv" style="--d: 0.2s">
               <span class="mono">SEMANGAT BELAJAR</span><b>100%</b><i></i>
@@ -646,7 +658,8 @@
           <!-- penutup #edu (sebelumnya hilang, bikin tab Proyek kosong) -->
           <div class="pn em" id="prj">
             <div style="--i: 0">
-              Proyek pertama sedang disiapkan.<br /><span class="mono"
+              Piagam/penghargaan pertama sedang disiapkan.<br /><span
+                class="mono"
                 >segera tampil di sini</span
               >
             </div>
@@ -671,6 +684,7 @@
                 <input
                   class="f"
                   name="n"
+                  autocomplete="name"
                   placeholder="Nama kamu"
                   aria-label="Nama"
                 />
@@ -678,6 +692,7 @@
                   class="f"
                   name="e"
                   type="email"
+                  autocomplete="email"
                   placeholder="Email kamu"
                   aria-label="Email"
                 />
@@ -705,10 +720,10 @@
     <footer class="mono">
       <img class="ft-logo" src="img/logo.png" alt="Logo" />
       <span>
-        © <span id="yr"></span> Yahya Ismail Sinaga. All rights reserved.
+        © <span id="yr">2026</span> Yahya Ismail Sinaga. All rights reserved.
       </span>
     </footer>
 
-    <script src="script.js" defer></script>
+    <script src="script.js?v=2" defer></script>
   </body>
 </html>
