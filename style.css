@@ -2084,87 +2084,54 @@ footer {
    YAHYA PORTFOLIO - MOBILE ABOUT FIX
 ====================================== */
 
-@media screen and (max-width: 600px) {
-  /* Layout utama */
-  .ab {
+/* ======================================
+   FIX FINAL - MOBILE ABOUT SPACING
+====================================== */
+
+@media (max-width: 600px) {
+  #about .ab {
+    display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 65px;
+    gap: 0 !important;
     align-items: start;
   }
 
-  /* Quote */
-  .qt {
+  /* Area foto profil dan orbit */
+  #about .ab > div:last-child {
     width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    padding: 18px 18px 18px 22px;
-    margin-bottom: 22px;
-    font-size: clamp(1rem, 4vw, 1.2rem);
-  }
-
-  /* Tombol */
-  .bt {
-    gap: 10px;
-  }
-
-  .b {
-    min-height: 48px;
-    padding: 12px 17px;
+    margin-top: 65px !important;
+    padding-bottom: 100px !important;
   }
 
   /* Foto profil */
-  .orb2 {
+  #about .orb2 {
     width: min(240px, 62vw);
     margin: 0 auto;
   }
 
-  /* Lingkaran orbit */
-  .r1 {
-    inset: -30px;
-  }
-
-  .r2 {
-    inset: -50px;
-  }
-
-  /* Ikon teknologi */
-  .rg i {
-    width: 34px;
-    height: 34px;
-    border-radius: 9px;
-    box-shadow: 0 4px 10px -5px #000;
-  }
-
-  /* Kartu statistik */
-  .stt {
+  /* Area keahlian */
+  #about .stt {
+    position: relative;
+    display: grid;
     grid-template-columns: 1fr;
-    gap: 12px;
-    margin-top: 42px;
+    gap: 14px;
+    margin-top: 0 !important;
   }
 
-  .sc {
-    min-height: 72px;
+  #about .sc {
+    min-height: 76px;
     padding: 16px 18px;
-    box-sizing: border-box;
-  }
-
-  .sc b {
-    font-size: 1.4rem;
+    border-radius: 17px;
   }
 }
 
-/* HP kecil */
-@media screen and (max-width: 380px) {
-  .orb2 {
+@media (max-width: 380px) {
+  #about .orb2 {
     width: 210px;
   }
 
-  .ab {
-    gap: 58px;
-  }
-
-  .qt {
-    padding: 15px;
+  #about .ab > div:last-child {
+    padding-bottom: 100px !important;
   }
 }
 
