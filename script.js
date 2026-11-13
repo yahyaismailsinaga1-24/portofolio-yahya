@@ -111,6 +111,9 @@
       var i = new Image();
       i.alt = prof ? "Foto Yahya Ismail Sinaga" : "";
       i.referrerPolicy = "no-referrer";
+      i.decoding = "async";
+      /* optimasi: hanya foto profil yang di-eager-kan (di atas layar) */
+      i.loading = "lazy";
       i.onload = function () {
         p.insertBefore(i, p.firstChild);
         p.classList.add("has");
@@ -342,10 +345,19 @@
       fr = 0,
       TINT = ["#ffffff", "#ffffff", "#cfe2ff", "#ffe9d0", "#d9d4ff"];
     var lw = 0,
-      lh = 0;
+      lh = 0,
+      /* --- optimasi performa --- */
+      paused = false, /* tab tidak aktif -> animasi berhenti total */
+      lastT = 0, /* batasi ~60fps walau layar 120Hz */
+      /* di layar sentuh, DPR & jumlah bintang diturunkan supaya ringan;
+         secara visual tetap sama */
+      touch = matchMedia("(hover:none)").matches,
+      dprCap = touch ? 1.5 : 2,
+      starDiv = touch ? 7000 : 5200,
+      maxStars = touch ? 240 : 380;
 
     function rs() {
-      var d = Math.min(devicePixelRatio || 1, 2);
+      var d = Math.min(devicePixelRatio || 1, dprCap);
       W = innerWidth;
       H = innerHeight;
       cv.width = Math.floor(W * d);
@@ -359,7 +371,7 @@
       }
       lw = W;
       lh = H;
-      var n = Math.min(380, Math.round((W * H) / 5200));
+      var n = Math.min(maxStars, Math.round((W * H) / starDiv));
       S = [];
       for (var i = 0; i < n; i++) {
         var r = Math.random();
@@ -386,6 +398,14 @@
     );
 
     function draw(t) {
+      /* --- optimasi: berhenti total kalau tab tidak aktif / bintang tak terlihat --- */
+      if (paused) return;
+      /* --- optimasi: batasi ke ~60fps (layar 90/120Hz tidak perlu render 2x) --- */
+      if (t - lastT < 15) {
+        requestAnimationFrame(draw);
+        return;
+      }
+      lastT = t;
       if (fr++ % 40 === 0)
         fc = getComputedStyle(root).getPropertyValue("--fg").trim() || fc;
       var dark = root.getAttribute("data-theme") !== "light",
@@ -481,6 +501,25 @@
     rs();
     addEventListener("resize", rs);
     if (!red) requestAnimationFrame(draw);
+
+    /* --- optimasi: jeda animasi saat tab disembunyikan / kanvas di luar layar --- */
+    function resume() {
+      if (red || !paused) return;
+      paused = false;
+      lastT = 0;
+      requestAnimationFrame(draw);
+    }
+    document.addEventListener("visibilitychange", function () {
+      paused = !!document.hidden;
+      if (!paused) resume();
+    });
+    new IntersectionObserver(
+      function (e) {
+        if (e[0].isIntersecting) resume();
+        else paused = true;
+      },
+      { threshold: 0 },
+    ).observe(cv);
   });
 
   /* ---------- spotlight grid ---------- */

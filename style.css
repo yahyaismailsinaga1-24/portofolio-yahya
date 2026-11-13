@@ -1488,6 +1488,116 @@ footer {
   }
 }
 
+/* ============================================================
+   OPTIMASI PERFORMA (tampilan tidak diubah)
+   Tujuan: scroll & animasi smooth di HP, tablet, dan PC.
+   Semua aturan di bawah hanya menyentuh cara browser merender,
+   bukan warna / ukuran / posisi / estetika.
+   ============================================================ */
+
+/* 1) Elemen yang dianimasikan terus-menerus dipromosikan ke layer GPU
+      agar tidak memicu repaint seluruh halaman. */
+.st i,
+.rg,
+.rg i,
+.rt,
+.qt::after,
+.stk.stk-l,
+.stk.stk-r,
+.stk.stk-ch,
+.av i,
+.now i,
+.bgf::before {
+  will-change: transform;
+}
+
+/* 2) Animasi dekoratif diberi isyarat "tidak mengubah layout" */
+.st i,
+.rg,
+.rg i,
+.rt,
+.qt::after {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* 3) `content-visibility` untuk section yang jauh dari viewport:
+      browser melewati render section di luar layar → scroll jauh lebih ringan.
+      `contain-intrinsic-size` menjaga tinggi perkiraan supaya scrollbar tidak melompat. */
+.sec {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}
+
+/* 4) Section yang sedang tidak terlihat: matikan animasi mahal di dalamnya.
+      Ini yang paling terasa di HP/tablet karena puluhan animasi berhenti total. */
+.sec:not(:has(.in)) .rg,
+.sec:not(:has(.in)) .rg i {
+  animation-play-state: paused;
+}
+
+/* 5) Bar navigasi & tombol mengambang: jangan pakai backdrop-filter saat user
+      sedang scroll di perangkat sentuh (blur × scroll = drop frame terbesar). */
+@media (max-width: 1024px) {
+  #nv,
+  #dn {
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    backdrop-filter: blur(12px) saturate(1.4);
+  }
+}
+
+/* 6) Layar sangat kecil: kurangi beban blur lebih jauh lagi.
+      Warna kaca tetap sama, hanya radius blur yang lebih hemat. */
+@media (max-width: 600px) {
+  #nv,
+  #dn {
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  .qt::after {
+    animation-duration: 8s;
+  }
+}
+
+/* 7) Perangkat sentuh: hover-transform pada kartu dibatalkan supaya tidak
+      ada "lompatan" saat tap (hover lengket di iOS/Android). */
+@media (hover: none) {
+  .sc:hover,
+  .tl:hover,
+  .ec:hover,
+  .sn a:hover,
+  .ft-logo:hover,
+  #dn:hover,
+  .b:hover {
+    transform: none;
+  }
+  #dn.up:hover {
+    transform: rotate(180deg);
+  }
+  .sc:hover,
+  .tl:hover,
+  .ec:hover {
+    background: var(--glass);
+  }
+}
+
+/* 8) Scroll halus hanya untuk perangkat yang sanggup; di HP biar native
+      (native scroll = 60/120fps, JS smooth scroll = frame drop). */
+@media (hover: none) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* 9) Hemat memori: gambar dekoratif kecil tidak perlu prioritas tinggi */
+.stk img,
+.sk-logo,
+.ft-logo,
+img.lgi {
+  content-visibility: auto;
+}
+
+
 .ci {
   gap: 16px;
 }
