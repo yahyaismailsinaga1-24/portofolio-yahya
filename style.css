@@ -531,8 +531,21 @@ footer,
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: grayscale(1) contrast(1.05);
+  /* foto profil terlihat jelas; hanya foto dekoratif (non-profil) yang abu-abu */
+  filter: none;
   z-index: 0;
+}
+
+/* foto di kartu lanyard tetap monokrom agar serasi dengan desain kartu */
+#cd .ph img {
+  /* foto pantulan kaca: digeser ke kiri + dicerahkan agar wajah kelihatan */
+  object-position: 34% center;
+  filter: grayscale(1) contrast(1.05) brightness(1.14);
+}
+
+/* kalau foto profil gagal dimuat, tampilkan siluet pengganti */
+#pc .ph img {
+  filter: none;
 }
 
 .cd b {
@@ -1040,6 +1053,44 @@ footer {
 .ft-logo:hover {
   opacity: 1;
   transform: translateY(-3px) rotate(-6deg) scale(1.1);
+}
+
+.ft-top {
+  align-self: center;
+  padding: 7px 14px;
+  border: 1px solid var(--ln);
+  border-radius: 999px;
+  color: var(--mu);
+  transition:
+    color 0.3s,
+    border-color 0.3s,
+    transform 0.4s var(--e);
+}
+
+.ft-top:hover {
+  color: var(--fg);
+  border-color: var(--mu2);
+  transform: translateY(-2px);
+}
+
+/* tautan lompat untuk pengguna keyboard / pembaca layar */
+.skip {
+  position: fixed;
+  left: 50%;
+  top: 8px;
+  translate: -50% -140%;
+  z-index: 999;
+  padding: 10px 18px;
+  border-radius: 10px;
+  background: var(--inv);
+  color: var(--invt);
+  font: 400 0.85rem var(--fb);
+  box-shadow: 0 10px 30px -10px #000;
+  transition: translate 0.3s var(--e);
+}
+
+.skip:focus-visible {
+  translate: -50% 0;
 }
 
 @media (max-width: 860px) {
@@ -2273,3 +2324,49 @@ img.lgi {
     font-size: 0.82rem;
   }
 }
+
+/* ============================================================
+   PERBAIKAN AKHIR (v6)
+   ============================================================ */
+
+/* Panel tab yang sedang tidak aktif benar-benar tidak memakan ruang/Tab-order */
+.pn[hidden] {
+  display: none !important;
+}
+
+/* Tab sekarang bisa difokus dengan keyboard: beri indikator jelas */
+.tabs button:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+}
+
+/* Foto profil: pastikan terlihat penuh & tajam di dalam lingkaran */
+#pc .ph {
+  height: 100%;
+}
+
+#pc .ph img {
+  object-position: center 25%;
+}
+
+/* Siluet abu-abu (.ph::before/.ph::after) hanya pengganti saat foto belum ada.
+   Begitu ada <img>, siluet disembunyikan supaya tidak menutupi foto. */
+.ph:has(img)::before,
+.ph:has(img)::after,
+.ph.has::before,
+.ph.has::after {
+  display: none;
+}
+
+/* Footer: tautan "kembali ke atas" tetap rapi saat sempit */
+footer .ft-top {
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ft-top:hover,
+  .skip {
+    transition: none;
+  }
+}
+

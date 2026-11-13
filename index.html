@@ -31,10 +31,31 @@
       href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=Outfit:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css?v=5" />
+    <link rel="stylesheet" href="style.css?v=7" />
     <link rel="icon" type="image/png" href="./img/kali.png" />
+    <link rel="apple-touch-icon" href="./img/kali.png" />
+    <!-- Fallback tanpa JavaScript: konten yang butuh reveal tetap terlihat -->
+    <noscript>
+      <style>
+        .rv {
+          opacity: 1 !important;
+          filter: none !important;
+          translate: 0 0 !important;
+        }
+        /* tanpa JS tab tidak bisa diklik: sembunyikan bar tab,
+           tampilkan semua panel berurutan */
+        #tabs {
+          display: none !important;
+        }
+        .pn {
+          display: grid !important;
+          margin-top: 28px;
+        }
+      </style>
+    </noscript>
   </head>
   <body>
+    <a class="skip" href="#main">Lewati ke konten utama</a>
     <svg width="0" height="0" style="position: absolute" aria-hidden="true">
       <symbol id="py" viewBox="0 0 100 100">
         <defs>
@@ -255,10 +276,10 @@
         ><a href="#portfolio">Portfolio</a><a href="#contact">Contact</a>
       </nav>
     </header>
-    <button id="dn" aria-label="Ke bagian berikutnya">⌄</button>
-    <div id="ts" role="status"></div>
+    <button id="dn" type="button" aria-label="Ke bagian berikutnya">⌄</button>
+    <div id="ts" role="status" aria-live="polite"></div>
 
-    <main>
+    <main id="main">
       <section class="hero" id="home">
         <div class="lanc" aria-hidden="true">
           <div id="lan">
@@ -269,6 +290,15 @@
                 <div class="sl"></div>
                 <div class="ph">
                   <div class="bm"></div>
+                  <img
+                    src="img/pp-opt.jpg"
+                    alt=""
+                    width="560"
+                    height="560"
+                    loading="lazy"
+                    decoding="async"
+                    referrerpolicy="no-referrer"
+                  />
                   <i class="sr">✦</i>
                   <div class="pyb">
                     <svg width="24" height="24" aria-hidden="true">
@@ -426,7 +456,7 @@
               Web <span>&amp; App Developer</span>
             </h1>
 
-            <div class="rl rise" style="--d: 0.6s">
+            <div class="rl rise" style="--d: 0.6s" aria-hidden="true">
               <span id="ty">Code. Create. Innovate.</span><em></em>
             </div>
             <p class="d rise" style="--d: 0.75s">
@@ -563,6 +593,15 @@
                 <div class="circ" id="pc">
                   <div class="ph">
                     <div class="bm"></div>
+                    <img
+                      src="img/ppgw.jpg"
+                      alt="Foto Yahya Ismail Sinaga"
+                      width="736"
+                      height="725"
+                      fetchpriority="high"
+                      decoding="async"
+                      referrerpolicy="no-referrer"
+                    />
                   </div>
                 </div>
               </div>
@@ -590,13 +629,54 @@
           <p class="rv" style="--d: 0.1s">
             Perjalanan belajar, keahlian, dan piagam saya.
           </p>
-          <div class="tabs rv" style="--d: 0.2s" id="tabs">
+          <div
+            class="tabs rv"
+            style="--d: 0.2s"
+            id="tabs"
+            role="tablist"
+            aria-label="Kategori portfolio"
+          >
             <div class="ind" id="ind"></div>
-            <button class="on" data-t="tech">Tech Stack</button>
-            <button data-t="edu">Pendidikan</button>
-            <button data-t="prj">Piagam/Penghargaan</button>
+            <button
+              class="on"
+              type="button"
+              role="tab"
+              id="tab-tech"
+              aria-selected="true"
+              aria-controls="tech"
+              data-t="tech"
+            >
+              Tech Stack
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="tab-edu"
+              aria-selected="false"
+              aria-controls="edu"
+              tabindex="-1"
+              data-t="edu"
+            >
+              Pendidikan
+            </button>
+            <button
+              type="button"
+              role="tab"
+              id="tab-prj"
+              aria-selected="false"
+              aria-controls="prj"
+              tabindex="-1"
+              data-t="prj"
+            >
+              Piagam/Penghargaan
+            </button>
           </div>
-          <div class="pn tg on" id="tech">
+          <div
+            class="pn tg on"
+            id="tech"
+            role="tabpanel"
+            aria-labelledby="tab-tech"
+          >
             <div class="tl" style="--i: 0">
               <em class="lg"
                 ><svg aria-hidden="true"><use href="#py" /></svg></em
@@ -680,7 +760,7 @@
               Database
             </div>
           </div>
-          <div class="pn ed" id="edu">
+          <div class="pn ed" id="edu" role="tabpanel" aria-labelledby="tab-edu">
             <div class="ec" style="--i: 0">
               <span class="mono">SEKOLAH DASAR</span>
               <h3>SD IT Uli Arga</h3>
@@ -709,7 +789,7 @@
             </div>
           </div>
           <!-- penutup #edu (sebelumnya hilang, bikin tab Proyek kosong) -->
-          <div class="pn em" id="prj">
+          <div class="pn em" id="prj" role="tabpanel" aria-labelledby="tab-prj">
             <div style="--i: 0">
               Piagam/penghargaan pertama sedang disiapkan.<br /><span
                 class="mono"
@@ -740,6 +820,7 @@
                   autocomplete="name"
                   placeholder="Nama kamu"
                   aria-label="Nama"
+                  maxlength="80"
                 />
                 <input
                   class="f"
@@ -748,12 +829,17 @@
                   autocomplete="email"
                   placeholder="Email kamu"
                   aria-label="Email"
+                  maxlength="120"
+                  inputmode="email"
+                  spellcheck="false"
                 />
                 <textarea
                   class="f"
                   name="m"
                   placeholder="Pesan"
                   aria-label="Pesan"
+                  maxlength="2000"
+                  required
                 ></textarea>
                 <button class="b p" style="width: 100%" type="submit">
                   Kirim Pesan
@@ -774,7 +860,7 @@
       <img
         class="ft-logo"
         src="img/logo.png"
-        alt="Logo"
+        alt="Logo Yahya Ismail Sinaga"
         width="72"
         height="72"
         loading="lazy"
@@ -783,8 +869,9 @@
       <span>
         © <span id="yr">2026</span> Yahya Ismail Sinaga. All rights reserved.
       </span>
+      <a class="ft-top" href="#home">Kembali ke atas ↑</a>
     </footer>
 
-    <script src="script.js?v=4" defer></script>
+    <script src="script.js?v=5" defer></script>
   </body>
 </html>

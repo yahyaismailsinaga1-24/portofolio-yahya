@@ -44,8 +44,8 @@
       }
     };
 
-  var PHOTO = "img/pp.png";
-  var PHOTO_PROFIL = "img/ppgw.png";
+  var PHOTO = "img/pp-opt.jpg";
+  var PHOTO_PROFIL = "img/ppgw.jpg";
 
   var LOGOS = {
     py: "img/pyrhon.png",
@@ -88,23 +88,31 @@
   var yr = $("#yr");
   if (yr) yr.textContent = new Date().getFullYear();
 
-  /* ---------- gambar opsional: sembunyikan kalau file tidak ada ---------- */
-  $$("img[data-optional]").forEach(function (img) {
-    img.addEventListener(
-      "error",
-      function () {
-        if (img.parentNode) img.parentNode.removeChild(img);
-      },
-      { once: true },
-    );
+  /* Foto profil sudah ditulis langsung di HTML (bukan disuntik lewat JS),
+     jadi tetap muncul walau JavaScript diblokir/gagal dimuat.
+     Hanya gambar opsional (logo sekolah) yang perlu fallback di sini: */
+  safe(function () {
+    $$("img[data-optional]").forEach(function (img) {
+      img.addEventListener(
+        "error",
+        function () {
+          if (img.parentNode) img.parentNode.removeChild(img);
+        },
+        { once: true },
+      );
+    });
   });
 
-  /* ---------- foto profil ---------- */
+  /* Cadangan: kalau suatu saat elemen .ph kosong (tanpa <img> di HTML),
+     isi otomatis dari sini. */
   safe(function () {
-    var sty = el("style");
-    sty.textContent = ".ph.has::before,.ph.has::after{display:none}";
-    document.head.appendChild(sty);
     $$(".ph").forEach(function (p) {
+      var ada = p.querySelector("img");
+      if (ada) {
+        /* penanda untuk browser lama yang belum mendukung :has() */
+        p.classList.add("has");
+        return;
+      }
       var prof = !!p.closest("#pc"),
         src = prof ? PHOTO_PROFIL || PHOTO : PHOTO;
       if (!src) return;
@@ -135,7 +143,7 @@
         "Anime Lover",
         "Musician",
         "Photographer",
-        "Passionate About Technology & Automotive",
+        "Tech & Automotive Enthusiast",
         "AI Engineer",
       ],
       ty = $("#ty"),
@@ -686,19 +694,48 @@
       ind.style.width = b.offsetWidth + "px";
       ind.style.transform = "translateX(" + b.offsetLeft + "px)";
     }
-    tb.forEach(function (b) {
-      b.addEventListener("click", function () {
-        var t = b.getAttribute("data-t");
-        /* validasi: target harus elemen yang benar-benar ada */
-        if (!t || !document.getElementById(t)) return;
-        tb.forEach(function (x) {
-          x.classList.toggle("on", x === b);
-        });
-        $$(".pn").forEach(function (p) {
-          p.classList.toggle("on", p.id === t);
-        });
-        mv(b);
+
+    function pilih(b, fokus) {
+      var t = b.getAttribute("data-t");
+      /* validasi: target harus elemen yang benar-benar ada */
+      if (!t || !document.getElementById(t)) return;
+      tb.forEach(function (x) {
+        var aktif = x === b;
+        x.classList.toggle("on", aktif);
+        x.setAttribute("aria-selected", aktif ? "true" : "false");
+        x.tabIndex = aktif ? 0 : -1;
       });
+      $$(".pn").forEach(function (p) {
+        var tampil = p.id === t;
+        p.classList.toggle("on", tampil);
+        p.hidden = !tampil;
+      });
+      mv(b);
+      if (fokus) b.focus();
+    }
+
+    tb.forEach(function (b, i) {
+      b.addEventListener("click", function () {
+        pilih(b, false);
+      });
+      /* navigasi papan tipe: panah kiri/kanan, Home, End */
+      b.addEventListener("keydown", function (e) {
+        var k = e.key,
+          n = null;
+        if (k === "ArrowRight" || k === "ArrowDown") n = (i + 1) % tb.length;
+        else if (k === "ArrowLeft" || k === "ArrowUp")
+          n = (i - 1 + tb.length) % tb.length;
+        else if (k === "Home") n = 0;
+        else if (k === "End") n = tb.length - 1;
+        if (n === null) return;
+        e.preventDefault();
+        pilih(tb[n], true);
+      });
+    });
+
+    /* sinkronkan hidden dengan keadaan awal */
+    $$(".pn").forEach(function (p) {
+      p.hidden = !p.classList.contains("on");
     });
 
     function fit() {
@@ -833,14 +870,24 @@
       var sv = u.ownerSVGElement;
       if (!sv || !sv.parentNode) return;
       var id = (u.getAttribute("href") || "").slice(1),
-        src =
-          LOGOS[id] ||
-          LOGOS[(sv.parentNode.textContent || "").trim()];
+        /* label diambil hanya dari elemen yang benar-benar milik ikon ini,
+           jangan pakai textContent induk (bisa ikut teks elemen lain) */
+        label =
+          (sv.parentNode.textContent || "").trim() ||
+          (sv.closest("[data-name]") || {}).dataset?.name ||
+          "",
+        src = LOGOS[id] || LOGOS[label];
       if (!src) return;
       var im = new Image();
       im.alt = "";
       im.className = "lgi";
       im.referrerPolicy = "no-referrer";
+      im.decoding = "async";
+      /* gambar ini dipakai sebagai pengganti SVG dan baru masuk halaman
+         setelah onload. Kalau diberi loading="lazy" sementara ia masih
+         di luar DOM, browser tidak akan pernah memuatnya sehingga
+         onload tak pernah jalan dan logo SVG tidak terganti.
+         Jadi paksa eager; ukurannya sudah dikecilkan agar ringan. */
       ["width", "height"].forEach(function (a) {
         if (sv.getAttribute(a)) im.setAttribute(a, sv.getAttribute(a));
       });
