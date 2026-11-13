@@ -19,13 +19,19 @@
       property="og:description"
       content="Web &amp; App Developer. Lihat tech stack, pendidikan, dan kontak."
     />
+    <!-- Keamanan: batasi sumber daya & larang inline script / plugin asing -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+    />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=Outfit:wght@300;400;500&family=Space+Mono:wght@400;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css?v=3" />
+    <link rel="stylesheet" href="style.css?v=4" />
     <link rel="icon" type="image/png" href="./img/kali.png" />
   </head>
   <body>
@@ -276,7 +282,8 @@
                     class="sk-logo"
                     src="img/emka.png"
                     alt=""
-                    onerror="this.remove()"
+                    referrerpolicy="no-referrer"
+                    data-optional
                   />SMK MULTI KARYA
                 </small>
                 <div class="bc"></div>
@@ -724,6 +731,6 @@
       </span>
     </footer>
 
-    <script src="script.js?v=2" defer></script>
+    <script src="script.js?v=3" defer></script>
   </body>
 </html>

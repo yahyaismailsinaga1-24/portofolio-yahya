@@ -1,0 +1,12 @@
+# OS / editor
+Thumbs.db
+desktop.ini
+.DS_Store
+*.lnk
+
+# Jangan commit folder konfigurasi editor
+.vscode/
+.idea/
+
+# Dependency (jika nanti pakai build tool)
+node_modules/
